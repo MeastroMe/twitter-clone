@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ profile_user.username }}</h2>
+
+    {% if profile_user != user %}
+        <a href="{% url 'toggle_follow' profile_user.username %}">Follow / Unfollow</a>
+    {% endif %}
+
+    <hr>
+
+    {% for tweet in tweets %}
+        <div class="border rounded p-2 my-2">
+            <p>{{ tweet.content }}</p>
+            <small>{{ tweet.created_at }}</small>
+        </div>
+    {% empty %}
+        <p>No tweets yet.</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Your feed</h2>
+    <a href="{% url 'post_tweet' %}">Post a tweet</a>
+
+    {% for tweet in tweets %}
+        <div class="border rounded p-2 my-2">
+            <strong>{{ tweet.author.username }}</strong>
+            <p>{{ tweet.content }}</p>
+            <small>{{ tweet.created_at }}</small>
+            <form method="post" action="{% url 'toggle_like' tweet.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Like</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No tweets yet. Follow someone or post your own.</p>
+    {% endfor %}
+{% endblock %}

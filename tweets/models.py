@@ -14,7 +14,7 @@ class Like(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user','tweet'], name='unique_like')
+            models.UniqueConstraint(fields=['user','tweet'], name='unique_like'),
         ]
 
 class Follow(models.Model):
@@ -24,5 +24,6 @@ class Follow(models.Model):
 
     class Meta:
         constraints=[
-            models.UniqueConstraint(fields=['follower','following'], name='unique_follow')
+            models.UniqueConstraint(fields=['follower','following'], name='unique_follow'),
+            models.CheckConstraint(check=~models.Q(follower=models.F('following')), name='no_self_following'),
         ]
