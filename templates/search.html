@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="get">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search users...">
+        <button type="submit">Search</button>
+    </form>
+
+    {% for result_user in results %}
+        <div class="border rounded p-2 my-2">
+            <a href="{% url 'profile' result_user.username %}">{{ result_user.username }}</a>
+            <form method="post" action="{% url 'toggle_follow' result_user.username %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Follow / Unfollow</button>
+            </form>
+        </div>
+    {% endfor %}
+{% endblock %}

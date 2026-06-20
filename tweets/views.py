@@ -30,7 +30,9 @@ def profile(request, username):
 def feed(request):
     followed_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
     tweets = Tweet.objects.filter(author__in=followed_users).order_by('-created_at')
-    return render(request, "feed.html", {"tweets":tweets})
+
+    liked_tweet_ids = Like.objects.filter(user=request.user).values_list('tweet_id', flat=True)
+    return render(request, "feed.html", {"tweets":tweets, "liked_tweet_ids": liked_tweet_ids})
 
 @login_required
 def post_tweet(request):
@@ -57,8 +59,8 @@ def toggle_like(request, tweet_id):
 @login_required
 @require_POST
 def toggle_follow(request, username):
-    target_user = Follow.objects.get(username=username)
-    existing_follow = Follow.objects.filter(follwer=request.user, following=target_user)
+    target_user = User.objects.get(username=username)
+    existing_follow = Follow.objects.filter(follower=request.user, following=target_user)
 
     if existing_follow.exists():
         existing_follow.delete()
@@ -66,3 +68,9 @@ def toggle_follow(request, username):
         Follow.objects.create(follower=request.user, following=target_user)
 
     return redirect("profile", username=username)
+
+@login_required
+def search_users(request):
+    query = request.GET.get("q", "")
+    results = User.objects.filter(username__icontains=query) if query else []
+    return render(request, "search.html", {"results": results, "query": query})

@@ -11,7 +11,11 @@
             <small>{{ tweet.created_at }}</small>
             <form method="post" action="{% url 'toggle_like' tweet.id %}" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit">Like</button>
+                {% if tweet.id in liked_tweet_ids %}
+                    <button type="submit">Unlike</button>
+                {% else %}
+                    <button type="submit">Like</button>
+                {% endif %}
             </form>
         </div>
     {% empty %}
